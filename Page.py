@@ -22,5 +22,3 @@ class Page(Thread):
         print("Variable id is: " + str(self.variableId))
         print("String value is: " + str(self.value))
         print("Last Access was on " + str(self.lastAccess))
-
-
