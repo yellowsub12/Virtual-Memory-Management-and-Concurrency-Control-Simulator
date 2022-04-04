@@ -1,12 +1,11 @@
 from threading import Thread
 
 class Process(Thread):
-    def __init__(self, id, arrival_time,burst,priority):
+    def __init__(self, id, arrival_time,burst):
         Thread.__init__(self) #everytime a process object is created, its own thread is created in the object itself.
         self.id = id
         self.arrival_time = arrival_time
         self.burst = burst
-        self.priority = priority
         self.nb_excutions = 0
         self.update_execution = 0
         self.waiting_time = 0
@@ -32,7 +31,6 @@ class Process(Thread):
         print("id is: " + str(self.id))
         print("Arrival time is: " + str(self.arrival_time))
         print("burst: " + str(self.burst))
-        print("Priority is: " + str(self.priority))
 
 
     #gets and sets funciton used throughout the program
