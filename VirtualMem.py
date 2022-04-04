@@ -1,26 +1,25 @@
 from Page import Page
+from files import read_processes, read_memconfig, read_commands
 
-class VirtualMem():
 
-    #Determines if main memory has free spot
-    def isFull(page[] mainMemory):
-        for i in range(len(mainMemory[])):
-            if mainMemory[i] == '':
-                print(str(i) + ' is empty')
-                return i
+def isFull(page[] mainMemory):
+    for i in range(len(mainMemory[])):
+        if mainMemory[i] == '':
+            print(str(i) + ' is empty')
+            return i
         else:
-                return -1
+            return -1
 
 
     #Frees a variable ID from a page
-    def Release(variableId, page[] mainMemory):
-        found = False
-        #If variable ID is in Main Memory
-        for i in range(len(mainMemory)):
-            if mainMemory[i].getId == variableId:
-                found = True 
-                mainMemory[i] = ''
-                return true
+def Release(variableId, page[] mainMemory):
+    found = False
+    #If variable ID is in Main Memory
+    for i in range(len(mainMemory)):
+        if mainMemory[i].getId == variableId:
+            found = True 
+            mainMemory[i] = ''
+            return true
 
         #open disk file code here
         if found == False :
@@ -29,14 +28,16 @@ class VirtualMem():
                 if mainMemory[i].getId == variableId:
                     found = True 
                     mainMemory[i] = ''
-                    return true
+                    return True
 
 
 
 
     #Stores page in memory
-    def Store(Page.variableId, Page.value, time, mainMemory[]):
-        
-        if()
+def Store(self, command): #command is the array that contains the command to be executed.
+    if self.isFull:
+        print("Virtual Memory is full")
+    else:
+        store_in_page = Page(command[1], command[2])
 
 
