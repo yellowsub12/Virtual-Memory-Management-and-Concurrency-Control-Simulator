@@ -4,10 +4,13 @@ from Process import Process
 
 def read_processes():
     open_file = open("processes.txt" , "r")
+    global number_cores 
     number_cores = open_file.readline()
+    global number_processes 
     number_processes = open_file.readline()
     count = 0
     lines = []
+    return_array = []
     for line in open_file:
         lines.append(line)
     open_file.close()
@@ -19,9 +22,9 @@ def read_processes():
         arrival_time = x[0]
         burst = x[1]
         process = Process(pid, arrival_time,burst)
-        process.print()
+        return_array.append(process)
         count = 1 + count
-    return number_cores
+    return return_array
 
 def read_memconfig():
     open_file = open("memconfig.txt", "r")
@@ -52,8 +55,11 @@ def separate_commands(lines, counter, commands):
     counter = counter + 1
     print(commands)
 
+def getCores():
+    return number_cores
+
+def getNumProcesses():
+    return number_processes
+
 counter = 0
 commands = []
-temp = read_commands()
-separate_commands(temp, counter, commands)
-separate_commands(temp, counter, commands)
