@@ -9,7 +9,10 @@ def vm(argument):
 def print_vm():
     print(vm_array)
 
+def read_disk():
+    return vm_array
+
 
 x = [('1', '2'), ('2', '7')]
 vm(x)
-print_vm()
+print(read_disk())
