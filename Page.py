@@ -39,11 +39,11 @@ class Page(Thread):
     def getLast(self):
         return self.LAST
 
-    def setHist(self, a):
-        self.HIST = a
+    def setHist(self, index, a):
+        self.HIST[index] = a
     
-    def getHist(self):
-        return self.HIST
+    def getHist(self, index):
+        return self.HIST[index]
 
 
 
