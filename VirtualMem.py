@@ -3,7 +3,7 @@ from Page import Page
 from files import read_processes, read_memconfig, read_commands
 from diskspace import read_disk, vm, remove
 
-
+mem_config = read_memconfig()
     #reminder, main memory is like an array where pages are elements
     #you don't add or remove pages, you only associate a variable ID and value to every page
 
@@ -26,7 +26,15 @@ def LookUp(variableId, time, mainMemory):
                 PageLookUp.setValue(read_array[j][1])
                 remove(j)
             else: #LRU-K algorithm
-                if time - PageLookUp.getLast():
+                if (time - PageLookUp.getLast()) < mem_config[2]:
+                    PageLookUp.setLast(time)
+                elif (time - PageLookUp.getLast()) > mem_config[2]:
+                    lcp = PageLookUp.getLast() - PageLookUp.getHist(1)
+                    for  i in range(mem_config[1], 0, -1):
+                        PageLookUp.setHist(i, PageLookUp.getHist((i - 1 + lcp)))
+                    PageLookUp.setLast(PageLookUp.getHist(1))
+
+
                     
             
 
