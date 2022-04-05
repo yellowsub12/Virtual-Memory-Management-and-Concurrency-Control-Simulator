@@ -1,12 +1,19 @@
 from threading import Thread
 
 class Page(Thread):
-    def __init__(self, variableId, value, lastAccess):
+    def __init__(self, variableId, value):
         Thread.__init__(self)
         self.variableId = variableId
         self.value = value
-        self.lastAccess = lastAccess
+        self.LAST = 0
+        self.HIST = []
+        self.isAvailable = True
 
+    def setAvailable(self, bool):
+        self.isAvailable = bool
+
+    def getAvailable(self):
+        return self.isAvailable
 
     def getID(self):
         return self.variableId
@@ -16,6 +23,29 @@ class Page(Thread):
 
     def getLastAccess(self):
         return self.lastAccess
+
+    def setID(self, a):
+        self.variableId = a
+    
+    def setValue(self, a):
+        self.value = a
+
+    def setLastAccess(self, a):
+        self.lastAccess = a
+
+    def setLast(self, a):
+        self.LAST = a
+
+    def getLast(self):
+        return self.LAST
+
+    def setHist(self, a):
+        self.HIST = a
+    
+    def getHist(self):
+        return self.HIST
+
+
 
 
     def print(self):

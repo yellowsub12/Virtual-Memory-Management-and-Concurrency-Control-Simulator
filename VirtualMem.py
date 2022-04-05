@@ -1,6 +1,7 @@
+import re
 from Page import Page
 from files import read_processes, read_memconfig, read_commands
-from diskspace import read_disk
+from diskspace import read_disk, vm, remove
 
 
     #reminder, main memory is like an array where pages are elements
@@ -9,6 +10,8 @@ from diskspace import read_disk
 
 def LookUp(variableId, time, mainMemory):
     found = False
+    read_array = read_disk()
+    j = 0
         
     #Checks in Main Memory first to find it
     #If it does, then returns the variable Id
@@ -17,10 +20,17 @@ def LookUp(variableId, time, mainMemory):
         if PageLookUp.getID() == variableId:
             found = True 
             return variableId
+        elif read_array[j][0] == PageLookUp.getID():
+            if PageLookUp.getAvailable() == True:
+                PageLookUp.setID(variableId)
+                PageLookUp.setValue(read_array[j][1])
+                remove(j)
+            else: #LRU-K algorithm
+                if time - PageLookUp.getLast():
+                    
+            
 
-        #Checks in disk space if it exists (page fault)
-        #if found == False :
-            #Check disk space
+
 
 
         
