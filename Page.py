@@ -1,4 +1,7 @@
 from threading import Thread
+from files import read_memconfig
+
+mem_config = read_memconfig()
 
 class Page(Thread):
     def __init__(self, variableId, value):
@@ -6,7 +9,7 @@ class Page(Thread):
         self.variableId = variableId
         self.value = value
         self.LAST = 0
-        self.HIST = []
+        self.HIST = [mem_config[1]]
         self.isAvailable = True
 
     def setAvailable(self, bool):
