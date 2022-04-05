@@ -1,12 +1,6 @@
 from Page import Page
 
-class VirtualMem():
-    def __init__(self):
-    #reminder, main memory is like an array where pages are elements
-    #you don't add or remove pages, you only associate a variable ID and value to every page
-
-
-    def LookUp(variableId, time, mainMemory):
+def LookUp(variableId, time, mainMemory):
         found = False
         
         #Checks in Main Memory first to find it
@@ -30,7 +24,9 @@ class VirtualMem():
     #If not
 
     #Determines if main memory has free spot
-    def isFull(mainMemory):
+
+    
+def isFull(mainMemory):
         for i in range(len(mainMemory)):
             if mainMemory[i] == '':
                 return i
@@ -39,7 +35,7 @@ class VirtualMem():
 
 
     #Frees a variable ID from a page
-    def Release(variableId, mainMemory):
+def Release(variableId, mainMemory):
         found = False
         #If variable ID is in Main Memory
         for i in range(len(mainMemory)):
@@ -60,7 +56,7 @@ class VirtualMem():
 
 
     #Stores variable ID and value in page memory
-    def Store(variableId, value, mainMemory):
+def Store(variableId, value, mainMemory):
         
         #Stores Id and value if there's memory
         if (VirtualMem.isFull(mainMemory) != -1):
@@ -69,8 +65,3 @@ class VirtualMem():
         #else:
             #open vm txt and add into it 
             
-        
-    
-
-
-
