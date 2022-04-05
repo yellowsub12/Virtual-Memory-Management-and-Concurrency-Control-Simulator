@@ -12,6 +12,10 @@ def print_vm():
 def read_disk():
     return vm_array
 
+def remove(index):
+    vm_array.pop(index)
+
+
 
 x = [('1', '2'), ('2', '7')]
 vm(x)
