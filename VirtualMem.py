@@ -1,4 +1,5 @@
 from Page import Page
+from files import read_processes, read_memconfig, read_commands
 
 class VirtualMem():
     def __init__(self):
@@ -34,8 +35,9 @@ class VirtualMem():
         for i in range(len(mainMemory)):
             if mainMemory[i] == '':
                 return i
+
         else:
-                return -1
+            return -1
 
 
     #Frees a variable ID from a page
@@ -48,6 +50,7 @@ class VirtualMem():
                 mainMemory[i] = ''
                 return True
 
+
         #open disk file code here
         #if found == False :
             #If variable ID is in Disk Space, remove it
@@ -55,6 +58,7 @@ class VirtualMem():
         #If neither condition above fulfilled, return false to let program know it failed
         #return False
         
+
 
 
 
@@ -71,6 +75,7 @@ class VirtualMem():
             
         
     
+
 
 
 
