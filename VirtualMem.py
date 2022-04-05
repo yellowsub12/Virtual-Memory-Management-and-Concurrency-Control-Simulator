@@ -4,8 +4,6 @@ from files import read_processes, read_memconfig, read_commands
 from diskspace import read_disk, vm, remove
 
 mem_config = read_memconfig()
-    #reminder, main memory is like an array where pages are elements
-    #you don't add or remove pages, you only associate a variable ID and value to every page
 
 
 def LookUp(variableId, time, mainMemory):
