@@ -11,6 +11,9 @@ mem_config = read_memconfig()
 def LookUp(variableId, time, mainMemory):
     found = False
     read_array = read_disk()
+    lower_temp = 0
+    condition_check = 0
+    temp_page = 1000000000
         
     #Checks in Main Memory first to find it
     #If it does, then returns the variable Id
@@ -36,9 +39,27 @@ def LookUp(variableId, time, mainMemory):
                         PageLookUp.setHist(i, PageLookUp.getHist((i - 1 + lcp)))
                     PageLookUp.setLast(PageLookUp.getHist(1))
                     for m in range(1, mem_config[0]):
-                        if PageLookUp.getLast() - PageLookUp.getHist(1) > mem_config[2]:
-                            temp = mainMemory[m]
-                        if temp.get
+                        x = mainMemory[m]
+                        if x.getLast() - x.getHist(1) > mem_config[2]:
+                            if lower_temp.getHist(mem_config[1]) == x.getHist(mem_config[1]):
+                                if lower_temp.getHist(1) < x.getHist(1):
+                                    lower_temp = x
+                                else:
+                                    lower_temp = lower_temp
+                            else:
+                                lower_temp = x
+                            condition_check = condition_check + 1
+                        elif condition_check == 0:
+                            for n in range(1,mem_config[0]):
+                                x = mainMemory[n]
+                                if x.getHist(1) < temp_page:
+                                    temp_page = x.getHist(1)
+                                else:
+                                    continue
+                        
+
+
+                        
 
 
 
