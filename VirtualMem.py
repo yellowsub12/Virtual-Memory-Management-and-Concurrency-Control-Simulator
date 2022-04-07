@@ -14,6 +14,7 @@ def LookUp(variableId, time, mainMemory):
     lower_temp = 0
     condition_check = 0
     temp_page = 1000000000
+    temp_disk = []
         
     #Checks in Main Memory first to find it
     #If it does, then returns the variable Id
@@ -56,7 +57,18 @@ def LookUp(variableId, time, mainMemory):
                                     temp_page = x.getHist(1)
                                 else:
                                     continue
-                        
+                            for p in range(0, mem_config[0]) :
+                                if mainMemory[p].getHist(1) == temp_page:
+                                    for z in range(len(read_array)):
+                                        if variableId == read_array[z][0]:
+                                            temp_disk = read_array[z]
+                                            temp_page_2 = mainMemory[p]
+                                            pass_vm = [mainMemory[p].getID(),mainMemory[p].getValue()]
+                                            vm_replace(z,pass_vm)
+                                            mainMemory[p].setId(temp_disk[0]) 
+                                            mainMemory[p].setValue(temp_disk[1])
+
+
 
 
                         
