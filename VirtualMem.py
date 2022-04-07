@@ -1,4 +1,6 @@
 import re
+
+from pip import main
 from Page import Page
 from files import read_processes, read_memconfig, read_commands
 from diskspace import read_disk, vm, remove
@@ -9,16 +11,18 @@ mem_config = read_memconfig()
 def LookUp(variableId, time, mainMemory):
     found = False
     read_array = read_disk()
-    j = 0
         
     #Checks in Main Memory first to find it
     #If it does, then returns the variable Id
     for i in range(len(mainMemory)):
         PageLookUp = mainMemory[i]
         if PageLookUp.getID() == variableId:
-            found = True 
             return variableId
-        elif read_array[j][0] == PageLookUp.getID():
+        else:
+            continue
+    for j in range(len(mainMemory)):
+        PageLookUp = mainMemory[j]
+        if read_array[j][0] == PageLookUp.getID():
             if PageLookUp.getAvailable() == True:
                 PageLookUp.setID(variableId)
                 PageLookUp.setValue(read_array[j][1])
@@ -31,6 +35,11 @@ def LookUp(variableId, time, mainMemory):
                     for  i in range(mem_config[1], 0, -1):
                         PageLookUp.setHist(i, PageLookUp.getHist((i - 1 + lcp)))
                     PageLookUp.setLast(PageLookUp.getHist(1))
+                    for m in range(1, mem_config[0]):
+                        if PageLookUp.getLast() - PageLookUp.getHist(1) > mem_config[2]:
+                            temp = mainMemory[m]
+                        if temp.get
+
 
 
                     
