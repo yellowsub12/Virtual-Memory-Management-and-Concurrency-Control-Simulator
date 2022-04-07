@@ -15,6 +15,10 @@ def read_disk():
 def remove(index):
     vm_array.pop(index)
 
+def vm_replace(index, array):
+    vm_array[index] = array
+
+
 
 
 x = [('1', '2'), ('2', '7')]

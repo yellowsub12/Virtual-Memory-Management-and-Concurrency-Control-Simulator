@@ -56,7 +56,7 @@ def LookUp(variableId, time, mainMemory):
                                     temp_page = x.getHist(1)
                                 else:
                                     continue
-                        
+                            
 
 
                         
