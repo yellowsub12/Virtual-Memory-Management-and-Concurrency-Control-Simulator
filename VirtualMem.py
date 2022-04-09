@@ -2,8 +2,8 @@ import re
 
 from pip import main
 from Page import Page
-from files import read_processes, read_memconfig, read_commands
-from diskspace import read_disk, vm, remove
+from files import *
+from diskspace import *
 
 mem_config = read_memconfig()
 
