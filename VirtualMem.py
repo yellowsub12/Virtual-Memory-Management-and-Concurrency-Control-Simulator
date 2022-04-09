@@ -15,6 +15,7 @@ def LookUp(variableId, time, mainMemory):
     condition_check = 0
     temp_page = 1000000000
     temp_disk = []
+    swap_time = 0
         
     #Checks in Main Memory first to find it
     #If it does, then returns the variable Id
@@ -67,26 +68,22 @@ def LookUp(variableId, time, mainMemory):
                                             vm_replace(z,pass_vm)
                                             mainMemory[p].setId(temp_disk[0]) 
                                             mainMemory[p].setValue(temp_disk[1])
+                                            swap_time = time
 
 
+                #Code for pt 4 
+                #When a page is first used, or was just replaced, it's associated information is initialized as below
+                #LAST(p) and HIST(p)[1] are set to the time stamp of that usage/replacement
+                mainMemory[p].setHist(1,0)
+                #HIST(p)[i], for i, 1<i<K< are set to zero
+                for yup in range(1,mem_config[1]):
+                    mainMemory[p].setHist(yup,0)
+                
 
-
-                        
-
-
-
-                    
-            
-
-
-
-
-        
-        
         #return -1 
-
-
     #If not
+
+
 
     #Determines if main memory has free spot
 def isFull(mainMemory):
@@ -101,20 +98,26 @@ def isFull(mainMemory):
     #Frees a variable ID from a page
 def Release(variableId, mainMemory):
         found = False
+        diskspace = read_disk()
+
         #If variable ID is in Main Memory
         for i in range(len(mainMemory)):
             if mainMemory[i][0] == variableId:
                 found = True 
                 mainMemory[i] = ''
                 return True
-
-
         #open disk file code here
-        #if found == False :
+        if found == False :
             #If variable ID is in Disk Space, remove it
-            
-        #If neither condition above fulfilled, return false to let program know it failed
-        #return False
+            for i in range(len(diskspace)):
+             if mainMemory[i][0] == variableId:
+                found = True 
+                remove(i)
+                return True
+        
+        #If still falls, return found which is gonna be still false
+        #to let program know it was false
+        return found
         
 
 
@@ -125,11 +128,11 @@ def Release(variableId, mainMemory):
 def Store(variableId, value, mainMemory):
         
         #Stores Id and value if there's memory
-        if (VirtualMem.isFull(mainMemory) != -1):
-            mainMemory[VirtualMem.isFull(mainMemory)] = [variableId,value]
-            #store it in Disk space as well, code for that here
-        #else:
-            #open vm txt and add into it 
+        if (isFull(mainMemory) != -1):
+            mainMemory[isFull(mainMemory)] = [variableId,value]
+        #otherwise stores it in disk space
+        else:
+            vm([variableId,value])
             
         
     

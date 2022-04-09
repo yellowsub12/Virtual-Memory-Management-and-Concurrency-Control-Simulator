@@ -1,5 +1,6 @@
-from threading import Thread
-from files import read_memconfig
+from threading import *
+from files import *
+import threading
 
 mem_config = read_memconfig()
 

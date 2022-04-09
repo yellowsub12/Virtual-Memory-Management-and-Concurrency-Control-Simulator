@@ -12,8 +12,9 @@ def LookUp(variableId, time, mainMemory):
                 return variableId
 
         #Checks in disk space if it exists (page fault)
-        #if found == False :
+        if found == False :
             #Check disk space
+            
 
 
         
