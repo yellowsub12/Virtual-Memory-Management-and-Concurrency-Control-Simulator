@@ -1,31 +1,48 @@
-cars = [2]
-cars = ["Ford", "Das"]
-carx = ["Toyota","BMW"]
 
-#print(len(cars))
-def isFull():
-    for i in range(len(cars)):
-     if cars[i] =='':
-        print(str(i) + ' is empty')
-        return i
-    else:
-        return -1
+from threading import *
+import time
+import threading
 
-carz = []
-carz.append(cars)
-carz.append(carx)
+class CPUPainter():
+    def __init__(self, one, two, three):
+        self.i = one
+        self.x = two
+        self.z = three
 
-#print(carz)
-#print(carx)
+    def getOne(self):
+        time.sleep(2)
+        print(self.i)
+        return self.i
+
+    def getTwoz(self):
+        def getTwo(self):
+            time.sleep(2)
+            print(str(self.x))
+        def run(self):
+            t = threading.Thread(target = getTwo(self))
+            t.start()
+        run(self)
 
 
-#for x in cars:
-#    print(x)
-carz[0]=["Fordz","Daz"]
-#print(carz)
-#x = cars.index("")
-#print(x)
+        
 
-print(isFull())
-print(carz[0][2])
+
+
+d = CPUPainter(1,2,3)
+b = CPUPainter(1,4,3)
+
+d.getTwoz()
+print(threading.active_count())
+b.getTwoz()
+print(threading.active_count())
+
+
+
+
+
+
+
+
+
+
 
