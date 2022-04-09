@@ -19,8 +19,7 @@ class CPUPainter():
             time.sleep(2)
             print(str(self.x))
         def run(self):
-            t = threading.Thread(target = getTwo(self))
-            t.start()
+
         run(self)
 
 
@@ -32,9 +31,8 @@ d = CPUPainter(1,2,3)
 b = CPUPainter(1,4,3)
 
 d.getTwoz()
-print(threading.active_count())
 b.getTwoz()
-print(threading.active_count())
+
 
 
 

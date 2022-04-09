@@ -15,7 +15,6 @@ def LookUp(variableId, time, mainMemory):
     condition_check = 0
     temp_page = 1000000000
     temp_disk = []
-    swap_time = 0
         
     #Checks in Main Memory first to find it
     #If it does, then returns the variable Id
@@ -40,7 +39,7 @@ def LookUp(variableId, time, mainMemory):
                     for  i in range(mem_config[1], 0, -1):
                         PageLookUp.setHist(i, PageLookUp.getHist((i - 1 + lcp)))
                     PageLookUp.setLast(PageLookUp.getHist(1))
-                    for m in range(1, mem_config[0]):
+                for m in range(1, mem_config[0]):
                         x = mainMemory[m]
                         if x.getLast() - x.getHist(1) > mem_config[2]:
                             if lower_temp.getHist(mem_config[1]) == x.getHist(mem_config[1]):
@@ -63,21 +62,23 @@ def LookUp(variableId, time, mainMemory):
                                     for z in range(len(read_array)):
                                         if variableId == read_array[z][0]:
                                             temp_disk = read_array[z]
-                                            temp_page_2 = mainMemory[p]
                                             pass_vm = [mainMemory[p].getID(),mainMemory[p].getValue()]
                                             vm_replace(z,pass_vm)
                                             mainMemory[p].setId(temp_disk[0]) 
                                             mainMemory[p].setValue(temp_disk[1])
-                                            swap_time = time
+                                            mainMemory[p].setHist(1,time)
+                                            for yup in range(1,mem_config[1]):
+                                               mainMemory[p].setHist(yup,0)
+                                            mainMemory[p].setLast(time)
+                                            return True
+
 
 
                 #Code for pt 4 
                 #When a page is first used, or was just replaced, it's associated information is initialized as below
                 #LAST(p) and HIST(p)[1] are set to the time stamp of that usage/replacement
-                mainMemory[p].setHist(1,0)
                 #HIST(p)[i], for i, 1<i<K< are set to zero
-                for yup in range(1,mem_config[1]):
-                    mainMemory[p].setHist(yup,0)
+               
                 
 
         #return -1 
@@ -110,7 +111,7 @@ def Release(variableId, mainMemory):
         if found == False :
             #If variable ID is in Disk Space, remove it
             for i in range(len(diskspace)):
-             if mainMemory[i][0] == variableId:
+             if diskspace[i][0] == variableId:
                 found = True 
                 remove(i)
                 return True
