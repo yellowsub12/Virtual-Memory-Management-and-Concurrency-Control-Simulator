@@ -8,7 +8,7 @@ from files import *
 from diskspace import *
 
 #This returns an array of processes with their info (arrival time and burst time), and the number of cores and processes
-read_processes()
+
 #This returns an array with the values of number of pages [0], K value [1] and time-out [2]
 read_memconfig()
 #This returns an array with a list of commands and their values
@@ -65,9 +65,16 @@ if __name__ == "__main__":
     threads = []
     queue1 = queue.Queue()
     queue2 = queue.Queue()
-    pass1 = read_file()
-    processes = create_processes(pass1)
     count_processes = 0
+
+    #This returns an array of processes with their info (arrival time and burst time), and the number of cores and processes
+    processes=read_processes()
+
+    #This returns an array with the values of number of pages [0], K value [1] and time-out [2]
+    read_memconfig()
+    #This returns an array with a list of commands and their values
+    listcommands = read_commands()
+
     t1 = threading.Thread(target=main) #main thread for the program/scheduler
     t1.start()
     threads.append(t1)

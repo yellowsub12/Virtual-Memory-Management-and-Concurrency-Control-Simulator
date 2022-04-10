@@ -77,6 +77,3 @@ def getNumProcesses():
 counter = 0
 commands = []
 
-
-commands = read_processes()
-commands[0].print()
