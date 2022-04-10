@@ -10,10 +10,10 @@ mem_config = read_memconfig()
 
 
 def LookUp(variableId, time, mainMemory):
-    found = False
+    #found = False
     read_array = read_disk()
-    condition_check = 0
-    temp_page = 1000000000
+    #condition_check = 0
+    #temp_page = 1000000000
     temp_disk = []
     PagesThatPass = [] 
     PagesThatPassCounter = 0 
@@ -25,6 +25,12 @@ def LookUp(variableId, time, mainMemory):
     #If it does, then returns the variable Id
     for i in range(len(mainMemory)):
         if mainMemory[i].getID() == variableId:
+            if mainMemory[i].getUseCounter() == 0:
+                smallestHistPage.setHist(1,time)
+                smallestHistPage.setLast(time)
+                for yup in range(1,mem_config[1]):
+                    smallestHistPage.setHist(yup,0)
+                mainMemory[i].setUseCounter()
             return variableId
         else:
             continue
@@ -34,6 +40,12 @@ def LookUp(variableId, time, mainMemory):
                 mainMemory[i].setID(variableId)
                 mainMemory[i].setValue(read_array[i][1])
                 remove(i)
+                if mainMemory[i].getUseCounter() == 0:
+                    smallestHistPage.setHist(1,time)
+                    smallestHistPage.setLast(time)
+                    for yup in range(1,mem_config[1]):
+                        smallestHistPage.setHist(yup,0)
+                    mainMemory[i].setUseCounter()
     elif (isFull(mainMemory) == -1 )  :
         #When a page replacement is needed
         for m in range(0, mem_config[0]):
@@ -91,32 +103,13 @@ def LookUp(variableId, time, mainMemory):
                                 smallestHistPage.setId(temp_disk[0]) 
                                 smallestHistPage.setValue(temp_disk[1])
                                 smallestHistPage.setHist(1,time)
+                                smallestHistPage.setLast(time)
                                 for yup in range(1,mem_config[1]):
                                     smallestHistPage.setHist(yup,0)
-                                    smallestHistPage.setLast(time)
                                     return True
 
+ 
 
-
-
-
-
-                
-                #return -1 otherwise
-
-                #Code for pt 4 
-                #When a page is first used, or was just replaced, it's associated information is initialized as below
-                #LAST(p) and HIST(p)[1] are set to the time stamp of that usage/replacement
-                #HIST(p)[i], for i, 1<i<K< are set to zero
-               
-               for i in range(len(mainMemory)):
-                if mainMemory[i].getID() == variableId:
-
-
-                
-
-        #return -1 
-    #If not
 
 
 
@@ -131,15 +124,21 @@ def isFull(mainMemory):
 
 
     #Frees a variable ID from a page
-def Release(variableId, mainMemory):
+def Release(variableId, mainMemory, time):
         found = False
         diskspace = read_disk()
-
+        
         #If variable ID is in Main Memory
         for i in range(len(mainMemory)):
-            if mainMemory[i][0] == variableId:
+            if mainMemory[i].getID() == variableId:
                 found = True 
                 mainMemory[i] = ''
+                if mainMemory[i].getUseCounter() == 0:
+                    mainMemory[i].setHist(1,time)
+                    mainMemory[i].setLast(time)
+                    for yup in range(1,mem_config[1]):
+                        mainMemory[i].setHist(yup,0)
+                    mainMemory[i].setUseCounter()
                 return True
         #open disk file code here
         if found == False :
@@ -160,11 +159,17 @@ def Release(variableId, mainMemory):
 
 
     #Stores variable ID and value in page memory
-def Store(variableId, value, mainMemory):
+def Store(variableId, value, mainMemory, time):
         
         #Stores Id and value if there's memory
         if (isFull(mainMemory) != -1):
             mainMemory[isFull(mainMemory)] = [variableId,value]
+            if mainMemory[isFull(mainMemory)].getUseCounter() == 0:
+                mainMemory[isFull(mainMemory)].setHist(1,time)
+                mainMemory[isFull(mainMemory)].setLast(time)
+                for yup in range(1,mem_config[1]):
+                    mainMemory[isFull(mainMemory)].setHist(yup,0)
+                mainMemory[isFull(mainMemory)].setUseCounter()
         #otherwise stores it in disk space
         else:
             vm([variableId,value])
