@@ -7,20 +7,21 @@ from Process import Process
 import queue
 import threading
 import os
-from VirtualMemz import MemoryManager
+from MemoryManager import MemoryManager
 from files import *
 from diskspace import *
 import random
+import sys
 
 def main():
     global clock
     clockthread = threading.Timer(interval, main).start()
     threads.append(clockthread)
-    print("Clock is %d" % clock)
-    clock = clock + 1000
+    if clock > 0 :
+        print("Clock: %d" % clock)
     t2 = threading.Thread(target=scheduler)
+    clock = clock + 1000
     t2.start()
-    threads.append(t2)
     t2.join()
 
 
@@ -37,15 +38,15 @@ def scheduler():
     count_commands = 0
 
     while True:
-        if count_processes <= int(getNumProcesses()): 
+        if count_processes < int(getNumProcesses()): 
             x = processes[count_processes] #initialize the new processes
             if int(x.getArrivalTime()) <= clock : #current time of the clock:
                 if ActiveQueue.full():
-                    print("Time " + str(x.getArrivalTime()) + ", " + str(x.getID()) + ", Arrived")
+                    print("Clock: " + str(x.getArrivalTime()) + ", Process " + str(x.getID()) +  ": Started.")
                     InactiveQueue.put(x)
                     count_processes = count_processes + 1
                 else:
-                    print("Time " + str(x.getArrivalTime()) + ", " + str(x.getID()) + ", Arrived")
+                    print("Clock: " + str(x.getArrivalTime()) + ", Process " + str(x.getID()) + ": Started.")
                     ActiveQueue.put(x)
                     count_processes = count_processes + 1
 
@@ -57,42 +58,49 @@ def scheduler():
                 line = listcommands[count_commands]
                 x = line.split()
                 if len(x) == 2: #in case we only have a variable id to use and no value to avoid array out of range
-                    MemoryManager(x[0], x[1], 0, clock, processToExecute)
                     randomWaitTime = random.choice(randomTimes)
+                    clock = clock + randomWaitTime
+                    MemoryManager(x[0], x[1], 0, clock, processToExecute)
+
+                    #print("Random waiting time of " + str(processToExecute.getID()) + " is " + str(randomWaitTime))
+                    #print("Burst time of " + str(processToExecute.getID()) + " is " + str(processToExecute.getBurst()))
                     if int(processToExecute.getBurst()) < randomWaitTime:
                         processToExecute.setBurst(0)
                         print("Clock: " + str(clock) + ", " + str(processToExecute.getID()) + ": Finished")
                         expired_processes.append(processToExecute)
                         expiry_count = expiry_count + 1
-                        print("This is the expiry count : " + str(expiry_count))
-                        print(int(getNumProcesses()))
+                        clock = clock + randomWaitTime
                         if expiry_count > (int(getNumProcesses()) - 1): #check if all processes are done and terminate the program
                             print("Program Completed!")
                             f.close()
                             os._exit(0)
+                        count_commands = count_commands + 1
                         continue
                     else:
-                        print("We got to the part where we push process to inactive")
                         processToExecute.setBurst((int(processToExecute.getBurst()) - randomWaitTime)) #update burst time
                         InactiveQueue.put(processToExecute)
                 else:
-                    MemoryManager(x[0],x[1],x[2],clock,processToExecute)
                     randomWaitTime  = random.choice(randomTimes)
+                    clock = clock + randomWaitTime
+                    MemoryManager(x[0],x[1],x[2],clock,processToExecute)
+
+                    #print("Random waiting time of " + str(processToExecute.getID()) + " is " + str(randomWaitTime))
+                    #print("Burst time of " + str(processToExecute.getID()) + " is " + str(processToExecute.getBurst()))
                     if int(processToExecute.getBurst()) < randomWaitTime:
                         processToExecute.setBurst(0)
                         print("Clock: " + str(clock) + ", " + str(processToExecute.getID()) + ": Finished")
+                        
                         expired_processes.append(processToExecute)
                         expiry_count = expiry_count + 1
-                        print("This is the expiry count : " + str(expiry_count))
-                        print(int(getNumProcesses()))
+                        clock = clock + randomWaitTime
 
                         if expiry_count > (int(getNumProcesses()) - 1): #check if all processes are done and terminate the program
                            print("Program Completed!")
                            f.close()
                            os._exit(0)
+                        count_commands = count_commands + 1
                         continue
                     else:
-                        print("We got to the part where we push process to inactive")
                         processToExecute.setBurst((int(processToExecute.getBurst()) - randomWaitTime)) #update burst time
                         InactiveQueue.put(processToExecute)
             count_commands = count_commands + 1
@@ -105,8 +113,8 @@ def scheduler():
 
 if __name__ == "__main__":
     f = open("output.txt", 'w')
+    sys.stdout = f
     clock = 0
-    clock = 1000
     interval = 1
     expiry_count = 0
     threads = []
@@ -122,4 +130,5 @@ if __name__ == "__main__":
     t1.start()
     threads.append(t1)
     t1.join()
+
 

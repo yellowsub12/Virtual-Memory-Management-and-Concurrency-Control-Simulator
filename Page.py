@@ -62,10 +62,8 @@ class Page(Thread):
     def getLenHist(self):
         return len(self.HIST)
 
-
-
-
     def print(self):
         print("Variable id is: " + str(self.variableId))
         print("String value is: " + str(self.value))
         print("Last Access was on " + str(self.LAST))
+

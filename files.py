@@ -66,4 +66,5 @@ def getNumProcesses():
     number_processes = open_file.readline()
     return number_processes
 
-read_processes()
+def sort():
+    open_file = open("output.txt" , "r")
