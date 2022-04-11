@@ -10,6 +10,7 @@ class Page(Thread):
         self.variableId = variableId
         self.value = value
         self.LAST = 0
+        self.UseCounter = 0
         self.HIST = [mem_config[1]]
         self.isAvailable = True
 
@@ -27,6 +28,12 @@ class Page(Thread):
 
     def getLastAccess(self):
         return self.lastAccess
+    
+    def getUseCounter(self):
+        return self.UseCounter
+    
+    def setUseCounter(self):
+        self.UseCounter = 1
 
     def setID(self, a):
         self.variableId = a

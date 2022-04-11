@@ -9,6 +9,8 @@ def read_processes():
     global number_processes 
     number_processes = open_file.readline()
     count = 0
+    tempSort=1000000000000
+    tempArraySorting = []
     lines = []
     return_array = []
     for line in open_file:
@@ -24,6 +26,17 @@ def read_processes():
         process = Process(pid, arrival_time,burst)
         return_array.append(process)
         count = 1 + count
+        tempSort=return_array[0]
+    for i in range(0,len(return_array)):
+        k = i +1
+        for j in range(k,len(return_array)):
+            if return_array[j].getArrivalTime() < tempSort.getArrivalTime():
+                tempSort = return_array[j]
+                return_array[i] = return_array[j]
+                return_array[j] = tempSort
+
+           
+
     return return_array
 
 def read_memconfig():
@@ -64,5 +77,3 @@ def getNumProcesses():
 counter = 0
 commands = []
 
-
-#comment for push
