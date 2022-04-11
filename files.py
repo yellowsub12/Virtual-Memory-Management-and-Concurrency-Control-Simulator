@@ -34,9 +34,6 @@ def read_processes():
                 tempSort = return_array[j]
                 return_array[j] = return_array[i]
                 return_array[i] = tempSort
-    
-
-
     return return_array
 
 def read_memconfig():
