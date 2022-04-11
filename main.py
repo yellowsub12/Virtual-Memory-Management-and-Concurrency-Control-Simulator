@@ -27,17 +27,21 @@ def scheduler():
     global expiry_count
     expired_processes = []
 
-    if count_processes < getNumProcesses(): 
+    if count_processes < int(getNumProcesses()): 
             x = processes[count_processes] #initialize the new processes
-            if x.getArrivalTime() <= clock : #current time of the clock:
-                if flag1 == True:
+            if int(x.getArrivalTime()) <= clock : #current time of the clock:
+                if ActiveQueue.full() is False :
                     print("Time " + str(x.getArrivalTime()) + ", " + str(x.getID()) + ", Arrived")
-                    queue2.put(x)
+                    ActiveQueue.put(x)
                     count_processes = count_processes + 1
                 else:
                     print("Time " + str(x.getArrivalTime()) + ", " + str(x.getID()) + ", Arrived")
-                    queue1.put(x)
+                    InactiveQueue.put(x)
                     count_processes = count_processes + 1
+
+    
+
+   
 
 
    
@@ -56,17 +60,16 @@ def main():
     t2.join()
 
 if __name__ == "__main__":
-    f = open("output.txt", 'w')
     flag1 = True     #queue1 flag
     flag2 = False #queue2 flag
-    clock = 0
+    clock = 1000
     interval = 1
     expiry_count = 0
     threads = []
-    queue1 = queue.Queue()
-    queue2 = queue.Queue()
+    ActiveQueue = queue.Queue(maxsize=getCores())
+    InactiveQueue = queue.Queue()
     count_processes = 0
-
+    array_of_active_processes = []
     #This returns an array of processes with their info (arrival time and burst time), and the number of cores and processes
     processes=read_processes()
 
