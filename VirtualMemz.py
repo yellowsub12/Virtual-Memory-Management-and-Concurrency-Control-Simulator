@@ -8,6 +8,17 @@ from diskspace import *
 
 mem_config = read_memconfig()
 
+def MemoryManager(command, varibleId, value, time, process):
+        if command ==  "Lookup":
+            print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + "varible " + str(varibleId) + "Value: " + str(value))
+            LookUp(varibleId, time, process)
+        elif command == "Release":
+            print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + "varible " + str(varibleId))
+            Release(varibleId, process, time)
+        elif command == "Store":
+            print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + "varible " + str(varibleId) + "Value: " + str(value))
+            Store(varibleId, value, process, time)
+
 
 def LookUp(variableId, time, mainMemory):
     #found = False

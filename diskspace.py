@@ -18,6 +18,3 @@ def remove(index):
 def vm_replace(index, array):
     vm_array[index] = array
 
-
-
-
