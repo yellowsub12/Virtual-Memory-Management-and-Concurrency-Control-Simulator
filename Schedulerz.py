@@ -33,7 +33,6 @@
                 execution.start() #start the thread
             execution.join() #join the thread
             print("Time " + str(clock) + ", " + str(execution.getID()) + ", Started, Granted " + str(execution.time_slot()))
-            wait_time = waiting_times(execution, clock) #calculate the waiting time
             if execution.time_slot() < execution.getBurst(): #check for process termination
                 clock = clock + execution.time_slot() #execute time slot
                 execution.setLastExecution(clock)   #record the completion time for future waiting time calculations

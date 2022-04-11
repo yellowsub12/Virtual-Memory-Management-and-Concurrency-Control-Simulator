@@ -48,7 +48,6 @@ def read_memconfig():
     return_array.append(number_pages)
     return_array.append(k_value)
     return_array.append(timeout)
-    print(return_array)
     return return_array
 
 def read_commands():
