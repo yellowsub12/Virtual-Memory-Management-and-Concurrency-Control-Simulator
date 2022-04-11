@@ -1,12 +1,12 @@
 from os import read
 from Process import Process
 
+number_cores = 0
+number_processes = 0
 
 def read_processes():
     open_file = open("processes.txt" , "r")
-    global number_cores 
     number_cores = open_file.readline()
-    global number_processes 
     number_processes = open_file.readline()
     count = 0
     tempSort=1000000000000
@@ -34,9 +34,6 @@ def read_processes():
                 tempSort = return_array[j]
                 return_array[i] = return_array[j]
                 return_array[j] = tempSort
-
-           
-
     return return_array
 
 def read_memconfig():
@@ -48,7 +45,6 @@ def read_memconfig():
     return_array.append(number_pages)
     return_array.append(k_value)
     return_array.append(timeout)
-    print(return_array)
     return return_array
 
 def read_commands():
@@ -59,21 +55,9 @@ def read_commands():
     open_file.close()
     return lines
 
-def separate_commands(lines, counter, commands):
-    i = lines[counter]
-    x = i.split()
-    commands.append(x[0])
-    commands.append(x[1])
-    commands.append(x[2])
-    counter = counter + 1
-    print(commands)
-
 def getCores():
     return number_cores
 
 def getNumProcesses():
     return number_processes
-
-counter = 0
-commands = []
 

@@ -18,10 +18,3 @@ def remove(index):
 def vm_replace(index, array):
     vm_array[index] = array
 
-
-
-
-
-x = [('1', '2'), ('2', '7')]
-vm(x)
-print(read_disk())
