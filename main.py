@@ -34,7 +34,7 @@ def scheduler():
     randomWaitTime = 0
     randomTimes = [100,200,300,400,500,600,700,800,900,1000]
 
-    if count_processes < getNumProcesses(): 
+    if count_processes < int(getNumProcesses()): 
             x = processes[count_processes] #initialize the new processes
             if x.getArrivalTime() <= clock : #current time of the clock:
                 if ActiveQueue.full():
@@ -85,6 +85,19 @@ def scheduler():
                         os._exit(0)
                     continue
         count_commands = count_commands + 1
+            if int(x.getArrivalTime()) <= clock : #current time of the clock:
+                if ActiveQueue.full() is False :
+                    print("Time " + str(x.getArrivalTime()) + ", " + str(x.getID()) + ", Arrived")
+                    ActiveQueue.put(x)
+                    count_processes = count_processes + 1
+                else:
+                    print("Time " + str(x.getArrivalTime()) + ", " + str(x.getID()) + ", Arrived")
+                    InactiveQueue.put(x)
+                    count_processes = count_processes + 1
+
+    
+
+ 
 
     for putToActive in InactiveQueue.get(): #get all processes in the inactive queue in the active queue
         ActiveQueue.put(putToActive)
@@ -93,6 +106,7 @@ def scheduler():
 if __name__ == "__main__":
     f = open("output.txt", 'w')
     clock = 0
+    clock = 1000
     interval = 1
     expiry_count = 0
     threads = []
@@ -100,6 +114,7 @@ if __name__ == "__main__":
     InactiveQueue = queue.Queue()
     count_processes = 0
     count_commands = 0
+    array_of_active_processes = []
     #This returns an array of processes with their info (arrival time and burst time), and the number of cores and processes
     processes=read_processes()
     #This returns an array with a list of commands and their values
