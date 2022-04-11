@@ -62,6 +62,7 @@ def getCores():
 
 def getNumProcesses():
     open_file = open("processes.txt" , "r")
+    number_cores = open_file.readline()
     number_processes = open_file.readline()
     return number_processes
 

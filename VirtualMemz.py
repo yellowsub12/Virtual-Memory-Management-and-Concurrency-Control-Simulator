@@ -6,7 +6,7 @@ from files import *
 from diskspace import *
 
 mem_config = read_memconfig()
-mainMemory = [int(mem_config[0])]
+mainMemory = []
 
 
 
@@ -50,13 +50,12 @@ def LookUp(variableId, time):
                     mainMemory[i].setUseCounter()
     elif (isFull() == -1 )  :
         #When a page replacement is needed
-        for m in range(0, mem_config[0]):
+        for m in range(0,int(mem_config[0])):
             #Of all the pages that have Last(p) - Hist(p)[1] > time-out
-            if mainMemory[m].getLast() - mainMemory[m].getHist(1) > mem_config[2]:
+            if mainMemory[m].getLast() - mainMemory[m].getHist(1) > int(mem_config[2]):
                 #Choose the one with the smallest value
 
-                PagesThatPass[PagesThatPassCounter] = mainMemory[m]
-                PagesThatPassCounter += 1 
+                PagesThatPass.append(mainMemory[m])
         # There aren't any pages that pass
         if PagesThatPassCounter==0 :
             for i in range(len(mainMemory)):
@@ -73,10 +72,10 @@ def LookUp(variableId, time):
                                 temp_disk = read_array[z]
                                 pass_vm = [smallestHistPage.getID(),smallestHistPage.getValue()]
                                 vm_replace(z,pass_vm)
-                                smallestHistPage.setId(temp_disk[0]) 
+                                smallestHistPage.setID(temp_disk[0]) 
                                 smallestHistPage.setValue(temp_disk[1])
                                 smallestHistPage.setHist(1,time)
-                                for yup in range(1,mem_config[1]):
+                                for yup in range(1,int(mem_config[1])):
                                     smallestHistPage.setHist(yup,0)
                                     smallestHistPage.setLast(time)
                                     return True
@@ -137,8 +136,8 @@ def Release(variableId, time):
         for i in range(len(mainMemory)):
             if mainMemory[i].getID() == variableId:
                 found = True 
-                mainMemory[i] = ''
-                if mainMemory[i].getUseCounter() == 0:
+                mainMemory.pop(i)
+                if int(mainMemory[i].getUseCounter()) == 0:
                     mainMemory[i].setHist(1,time)
                     mainMemory[i].setLast(time)
                     for yup in range(1,mem_config[1]):
@@ -165,8 +164,10 @@ def Release(variableId, time):
 
     #Stores variable ID and value in page memory
 def Store(variableId, value, time):
+
         #Stores Id and value if there's memory
         if (isFull() != -1):
+            print("Store has been accessed! For variable " + variableId + "!")
             page = Page(variableId,value)
             if page.getUseCounter() == 0:
                 page.setHist2(time)
@@ -185,11 +186,11 @@ def Store(variableId, value, time):
         
 def MemoryManager(command, varibleId, value, time, process):
         if command ==  "Lookup":
-            print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + " Variable " + str(varibleId) + " ,Value: " + str(value))
+            print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + " Variable " + str(varibleId))
             LookUp(varibleId, time)
         elif command == "Release":
             print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + " Variable " + str(varibleId))
-            Release(varibleId, process, time)
+            Release(varibleId, time)
         elif command == "Store":
-            print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + " Variable " + str(varibleId) + " ,Value: " + str(value))
+            print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + " Variable " + str(varibleId) + ", Value: " + str(value))
             Store(varibleId, value, time)

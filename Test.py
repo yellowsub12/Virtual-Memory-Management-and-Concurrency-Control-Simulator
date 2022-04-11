@@ -1,5 +1,4 @@
-x = 5
+mainMemory = []
+mainMemory[10] 
 
-x += 1 
-
-print(x)
+print(len(mainMemory))

@@ -64,12 +64,15 @@ def scheduler():
                         print("Clock: " + str(clock) + ", " + str(processToExecute.getID()) + ": Finished")
                         expired_processes.append(processToExecute)
                         expiry_count = expiry_count + 1
+                        print("This is the expiry count : " + str(expiry_count))
+                        print(int(getNumProcesses()))
                         if expiry_count > (int(getNumProcesses()) - 1): #check if all processes are done and terminate the program
                             print("Program Completed!")
                             f.close()
                             os._exit(0)
                         continue
                     else:
+                        print("We got to the part where we push process to inactive")
                         processToExecute.setBurst((int(processToExecute.getBurst()) - randomWaitTime)) #update burst time
                         InactiveQueue.put(processToExecute)
                 else:
@@ -80,12 +83,16 @@ def scheduler():
                         print("Clock: " + str(clock) + ", " + str(processToExecute.getID()) + ": Finished")
                         expired_processes.append(processToExecute)
                         expiry_count = expiry_count + 1
+                        print("This is the expiry count : " + str(expiry_count))
+                        print(int(getNumProcesses()))
+
                         if expiry_count > (int(getNumProcesses()) - 1): #check if all processes are done and terminate the program
-                            print("Program Completed!")
-                            f.close()
-                            os._exit(0)
+                           print("Program Completed!")
+                           f.close()
+                           os._exit(0)
                         continue
                     else:
+                        print("We got to the part where we push process to inactive")
                         processToExecute.setBurst((int(processToExecute.getBurst()) - randomWaitTime)) #update burst time
                         InactiveQueue.put(processToExecute)
             count_commands = count_commands + 1
