@@ -15,9 +15,7 @@ import sys
 
 def main():
     global clock
-    clockthread = threading.Timer(interval, main).start()
-    if clock > 0 :
-        print("Clock: %d" % clock)
+    threading.Timer(interval, main).start()
     t2 = threading.Thread(target=scheduler)
     clock = clock + 1000
     t2.start()

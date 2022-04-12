@@ -16,7 +16,7 @@ mainMemory = []
 
 
 
-def LookUp(variableId, time):
+def LookUp(variableId, time, process):
     #Reads content of disk space and saves it read_array
     read_array = read_disk()
     #Temporary value used for disk space swap
@@ -42,6 +42,7 @@ def LookUp(variableId, time):
                     for yup in range(1,int(mem_config[1])):
                         smallestHistPage.setHist(yup,0)
                 mainMemory[i].setUseCounter()
+                print("Clock: " + str(time) + ", Process " + str(process.getID()) + "Lookup: " + str(variableId) + ", Value: " + str(mainMemory[i].getValue()))
             return variableId
         else:
             continue
@@ -59,6 +60,8 @@ def LookUp(variableId, time):
                         for yup in range(1,int(mem_config[1])):
                             smallestHistPage.setHist(yup,0)
                     mainMemory[i].setUseCounter()
+                    print("Clock: " + str(time) + ", Process " + str(process.getID()) + "Lookup: " + str(variableId) + ", Value: " + str(mainMemory[i].getValue()))
+                return True
     elif (isFull() == -1 )  :
         #When a page replacement is needed
         for m in range(0,int(mem_config[0])):
@@ -82,6 +85,7 @@ def LookUp(variableId, time):
                                 temp_disk = read_array[z]
                                 pass_vm = [smallestHistPage.getID(),smallestHistPage.getValue()]
                                 vm_replace(z,pass_vm)
+                                print("Clock: " + str(time) + ", Process " + str(process.getID()) + ", Memory Manager, SWAP Variable " + str(smallestHistPage.getID()) + ", with Variable " + str(temp_disk[0]))
                                 smallestHistPage.setID(temp_disk[0]) 
                                 smallestHistPage.setValue(temp_disk[1])
                                 smallestHistPage.setHist(1,time)
@@ -111,6 +115,7 @@ def LookUp(variableId, time):
                                 temp_disk = read_array[z]
                                 pass_vm = [smallestHistPage.getID(),smallestHistPage.getValue()]
                                 vm_replace(z,pass_vm)
+                                print("Clock: " + str(time) + ", Process " + str(process.getID()) + ", Memory Manager, SWAP Variable " + str(smallestHistPage.getID()) + ", with Variable " + str(temp_disk[0]))
                                 smallestHistPage.setId(temp_disk[0]) 
                                 smallestHistPage.setValue(temp_disk[1])
                                 smallestHistPage.setHist(1,time)
@@ -199,7 +204,7 @@ def MemoryManager(command, varibleId, value, time, process):
         if command ==  "Lookup":
             print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + " Variable " + str(varibleId))
             semaphore.acquire()
-            LookUp(varibleId, time)
+            LookUp(varibleId, time, process)
             semaphore.release()
         elif command == "Release":
             print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + " Variable " + str(varibleId))
