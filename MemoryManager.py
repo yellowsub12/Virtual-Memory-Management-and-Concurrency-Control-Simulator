@@ -6,27 +6,33 @@ from files import *
 from diskspace import *
 import threading
 
-
+#Semaphore used for functions in memory manager
 semaphore = threading.Semaphore()
 
+#Reads from memconfig file, saves the number of pages, K value and time-out 
 mem_config = read_memconfig()
+#Main Memory (RAM) 
 mainMemory = []
 
 
 
 def LookUp(variableId, time):
-    #found = False
+    #Reads content of disk space and saves it read_array
     read_array = read_disk()
-    #condition_check = 0
-    #temp_page = 1000000000
+    #Temporary value used for disk space swap
     temp_disk = []
+    #Array to store pages that pass the Last(p)-Hist(p)[1] > time-out condition
     PagesThatPass = [] 
+    #Counter used to know when no page passes above condition
     PagesThatPassCounter = 0 
+    #Array that stores duplicate in case of two identical minimums
     PagesThatPassDuplicates = []
+    #Used for determining smallest hist value
     smallestHist = 100000000000000
     smallestHistPage = 0 
     #Checks in Main Memory first to find it
     #If it does, then returns the variable Id
+    #If first time, sets hist and last values as specified to 
     for i in range(len(mainMemory)):
         if mainMemory[i].getID() == variableId:
             if mainMemory[i].getUseCounter() == 0:
@@ -39,6 +45,7 @@ def LookUp(variableId, time):
             return variableId
         else:
             continue
+    #If there's space, sets variable ID and value from disk space
     if (isFull() != -1) :    
         for i in range(len(read_array)):
             if read_array[i][0] == variableId:
@@ -58,7 +65,6 @@ def LookUp(variableId, time):
             #Of all the pages that have Last(p) - Hist(p)[1] > time-out
             if mainMemory[m].getLast() - mainMemory[m].getHist(1) > int(mem_config[2]):
                 #Choose the one with the smallest value
-
                 PagesThatPass.append(mainMemory[m])
         # There aren't any pages that pass
         if PagesThatPassCounter==0 :
@@ -188,7 +194,7 @@ def Store(variableId, value, time):
         else:
             vm([variableId,value])
             
-        
+        #Memory Manager
 def MemoryManager(command, varibleId, value, time, process):
         if command ==  "Lookup":
             print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + " Variable " + str(varibleId))
