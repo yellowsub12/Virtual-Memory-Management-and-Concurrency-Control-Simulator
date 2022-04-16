@@ -52,14 +52,18 @@ class Page(Thread):
 
     def setHist(self, index, a):
         self.HIST[index] = a
+
+    def setHist2(self, time):
+        self.HIST.append(time)
     
     def getHist(self, index):
         return self.HIST[index]
 
-
-
+    def getLenHist(self):
+        return len(self.HIST)
 
     def print(self):
         print("Variable id is: " + str(self.variableId))
         print("String value is: " + str(self.value))
-        print("Last Access was on " + str(self.lastAccess))
+        print("Last Access was on " + str(self.LAST))
+

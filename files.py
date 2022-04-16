@@ -32,8 +32,8 @@ def read_processes():
         for j in range(k,len(return_array)):
             if return_array[j].getArrivalTime() < tempSort.getArrivalTime():
                 tempSort = return_array[j]
-                return_array[i] = return_array[j]
-                return_array[j] = tempSort
+                return_array[j] = return_array[i]
+                return_array[i] = tempSort
     return return_array
 
 def read_memconfig():
@@ -56,8 +56,15 @@ def read_commands():
     return lines
 
 def getCores():
+    open_file = open("processes.txt" , "r")
+    number_cores = open_file.readline()
     return number_cores
 
 def getNumProcesses():
+    open_file = open("processes.txt" , "r")
+    number_cores = open_file.readline()
+    number_processes = open_file.readline()
     return number_processes
 
+def sort():
+    open_file = open("output.txt" , "r")

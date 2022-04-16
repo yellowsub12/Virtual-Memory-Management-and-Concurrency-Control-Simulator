@@ -2,50 +2,52 @@ import re
 
 from pip import main
 from Page import Page
-from VirtualMem import isFull
 from files import *
 from diskspace import *
+import threading
 
+#Semaphore used for functions in memory manager
+semaphore = threading.Semaphore()
+
+#Reads from memconfig file, saves the number of pages, K value and time-out 
 mem_config = read_memconfig()
-
-def MemoryManager(command, varibleId, value, time, process):
-        if command ==  "Lookup":
-            print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + "varible " + str(varibleId) + "Value: " + str(value))
-            LookUp(varibleId, time, process)
-        elif command == "Release":
-            print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + "varible " + str(varibleId))
-            Release(varibleId, process, time)
-        elif command == "Store":
-            print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + "varible " + str(varibleId) + "Value: " + str(value))
-            Store(varibleId, value, process, time)
+#Main Memory (RAM) 
+mainMemory = []
 
 
-def LookUp(variableId, time, mainMemory):
-    #found = False
+
+def LookUp(variableId, time, process):
+    #Reads content of disk space and saves it read_array
     read_array = read_disk()
-    #condition_check = 0
-    #temp_page = 1000000000
+    #Temporary value used for disk space swap
     temp_disk = []
+    #Array to store pages that pass the Last(p)-Hist(p)[1] > time-out condition
     PagesThatPass = [] 
+    #Counter used to know when no page passes above condition
     PagesThatPassCounter = 0 
+    #Array that stores duplicate in case of two identical minimums
     PagesThatPassDuplicates = []
+    #Used for determining smallest hist value
     smallestHist = 100000000000000
     smallestHistPage = 0 
-
     #Checks in Main Memory first to find it
     #If it does, then returns the variable Id
+    #If first time, sets hist and last values as specified to 
     for i in range(len(mainMemory)):
         if mainMemory[i].getID() == variableId:
             if mainMemory[i].getUseCounter() == 0:
                 smallestHistPage.setHist(1,time)
                 smallestHistPage.setLast(time)
-                for yup in range(1,mem_config[1]):
-                    smallestHistPage.setHist(yup,0)
+                if smallestHistPage.getLenHist() < 1:
+                    for yup in range(1,int(mem_config[1])):
+                        smallestHistPage.setHist(yup,0)
                 mainMemory[i].setUseCounter()
+                print("Clock: " + str(time) + ", Process " + str(process.getID()) + "Lookup: " + str(variableId) + ", Value: " + str(mainMemory[i].getValue()))
             return variableId
         else:
             continue
-    if (isFull(mainMemory) != -1) :    
+    #If there's space, sets variable ID and value from disk space
+    if (isFull() != -1) :    
         for i in range(len(read_array)):
             if read_array[i][0] == variableId:
                 mainMemory[i].setID(variableId)
@@ -54,18 +56,19 @@ def LookUp(variableId, time, mainMemory):
                 if mainMemory[i].getUseCounter() == 0:
                     smallestHistPage.setHist(1,time)
                     smallestHistPage.setLast(time)
-                    for yup in range(1,mem_config[1]):
-                        smallestHistPage.setHist(yup,0)
+                    if smallestHistPage.getLenHist() < 1:
+                        for yup in range(1,int(mem_config[1])):
+                            smallestHistPage.setHist(yup,0)
                     mainMemory[i].setUseCounter()
-    elif (isFull(mainMemory) == -1 )  :
+                    print("Clock: " + str(time) + ", Process " + str(process.getID()) + "Lookup: " + str(variableId) + ", Value: " + str(mainMemory[i].getValue()))
+                return True
+    elif (isFull() == -1 )  :
         #When a page replacement is needed
-        for m in range(0, mem_config[0]):
+        for m in range(0,int(mem_config[0])):
             #Of all the pages that have Last(p) - Hist(p)[1] > time-out
-            if mainMemory[m].getLast() - mainMemory[m].getHist(1) > mem_config[2]:
+            if mainMemory[m].getLast() - mainMemory[m].getHist(1) > int(mem_config[2]):
                 #Choose the one with the smallest value
-
-                PagesThatPass[PagesThatPassCounter] = mainMemory[m]
-                PagesThatPassCounter += 1 
+                PagesThatPass.append(mainMemory[m])
         # There aren't any pages that pass
         if PagesThatPassCounter==0 :
             for i in range(len(mainMemory)):
@@ -82,10 +85,11 @@ def LookUp(variableId, time, mainMemory):
                                 temp_disk = read_array[z]
                                 pass_vm = [smallestHistPage.getID(),smallestHistPage.getValue()]
                                 vm_replace(z,pass_vm)
-                                smallestHistPage.setId(temp_disk[0]) 
+                                print("Clock: " + str(time) + ", Process " + str(process.getID()) + ", Memory Manager, SWAP Variable " + str(smallestHistPage.getID()) + ", with Variable " + str(temp_disk[0]))
+                                smallestHistPage.setID(temp_disk[0]) 
                                 smallestHistPage.setValue(temp_disk[1])
                                 smallestHistPage.setHist(1,time)
-                                for yup in range(1,mem_config[1]):
+                                for yup in range(1,int(mem_config[1])):
                                     smallestHistPage.setHist(yup,0)
                                     smallestHistPage.setLast(time)
                                     return True
@@ -111,6 +115,7 @@ def LookUp(variableId, time, mainMemory):
                                 temp_disk = read_array[z]
                                 pass_vm = [smallestHistPage.getID(),smallestHistPage.getValue()]
                                 vm_replace(z,pass_vm)
+                                print("Clock: " + str(time) + ", Process " + str(process.getID()) + ", Memory Manager, SWAP Variable " + str(smallestHistPage.getID()) + ", with Variable " + str(temp_disk[0]))
                                 smallestHistPage.setId(temp_disk[0]) 
                                 smallestHistPage.setValue(temp_disk[1])
                                 smallestHistPage.setHist(1,time)
@@ -125,17 +130,20 @@ def LookUp(variableId, time, mainMemory):
 
 
     #Determines if main memory has free spot
-def isFull(mainMemory):
-        for i in range(len(mainMemory)):
-            if mainMemory[i] == '':
-                return i
-
-        else:
+def isFull():
+        #for i in range(len(mainMemory)):
+        #    if mainMemory[i] == '':
+        #        return i
+        #return -1
+        if len(mainMemory) == int(mem_config[0]):
             return -1
+        else:
+            return 1
+        
 
 
     #Frees a variable ID from a page
-def Release(variableId, mainMemory, time):
+def Release(variableId, time):
         found = False
         diskspace = read_disk()
         
@@ -143,8 +151,10 @@ def Release(variableId, mainMemory, time):
         for i in range(len(mainMemory)):
             if mainMemory[i].getID() == variableId:
                 found = True 
-                mainMemory[i] = ''
-                if mainMemory[i].getUseCounter() == 0:
+                mainMemory[i].setID(-1)
+                mainMemory[i].setValue(-1)
+
+                if int(mainMemory[i].getUseCounter()) == 0:
                     mainMemory[i].setHist(1,time)
                     mainMemory[i].setLast(time)
                     for yup in range(1,mem_config[1]):
@@ -170,24 +180,40 @@ def Release(variableId, mainMemory, time):
 
 
     #Stores variable ID and value in page memory
-def Store(variableId, value, mainMemory, time):
-        
+def Store(variableId, value, time):
+
         #Stores Id and value if there's memory
-        if (isFull(mainMemory) != -1):
-            mainMemory[isFull(mainMemory)] = [variableId,value]
-            if mainMemory[isFull(mainMemory)].getUseCounter() == 0:
-                mainMemory[isFull(mainMemory)].setHist(1,time)
-                mainMemory[isFull(mainMemory)].setLast(time)
-                for yup in range(1,mem_config[1]):
-                    mainMemory[isFull(mainMemory)].setHist(yup,0)
-                mainMemory[isFull(mainMemory)].setUseCounter()
+        if (isFull() != -1):
+            page = Page(variableId,value)
+            if page.getUseCounter() == 0:
+                page.setHist2(time)
+                page.setLast(time)
+                if page.getLenHist() < 1:
+                    for yup in range(1,int(mem_config[1])):
+                        page.setHist(yup,0)
+                page.setUseCounter()
+                mainMemory.append(page)
+            else:
+                mainMemory.append(page)
         #otherwise stores it in disk space
         else:
             vm([variableId,value])
             
-        
-    
-
-
-
+        #Memory Manager
+def MemoryManager(command, varibleId, value, time, process):
+        if command ==  "Lookup":
+            print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + " Variable " + str(varibleId))
+            semaphore.acquire()
+            LookUp(varibleId, time, process)
+            semaphore.release()
+        elif command == "Release":
+            print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + " Variable " + str(varibleId))
+            semaphore.acquire()
+            Release(varibleId, time)
+            semaphore.release()
+        elif command == "Store":
+            print("Clock: " + str(time) + ", " + str(process.getID()) + " " + str(command) + " Variable " + str(varibleId) + ", Value: " + str(value))
+            semaphore.acquire()
+            Store(varibleId, value, time)
+            semaphore.release()
 

@@ -79,3 +79,6 @@ class Process(Thread):
 
     def getLastExecution(self):
         return self.last_execution_time
+
+    def run(self):
+        print("Hello")
